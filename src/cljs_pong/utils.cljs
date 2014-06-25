@@ -26,10 +26,8 @@
   "Transforms mouse coordinates from client space to canvas space.
 Does not perform bounds checking."
   [canvas [x y]]
-  (let [rect (.getBoundingClientRect canvas)
-        left (.-left rect)
-        top  (.-top rect)]
-    [(- x left) (- y top)]))
+  (let [rect (.getBoundingClientRect canvas)]
+    [(- x (.-left rect)) (- y (.-top rect))]))
 
 (defn center-on [[x y] {:keys [w h] :as obj}]
   "Center obj on point (x, y)."
