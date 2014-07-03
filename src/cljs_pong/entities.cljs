@@ -1,6 +1,6 @@
 (ns cljs-pong.entities
   (:require [monet.canvas :refer [entity]]
-            [cljs-pong.utils :refer [draw-rect]]))
+            [cljs-pong.utils :refer [draw-rect clamp]]))
 
 (defn- rect-entity [[scr-w scr-h] ent-w ent-h colour]
   (entity {:x 0, :y 0
@@ -22,4 +22,13 @@
                                 :left (* scr-w side-offset)
                                 :right (- scr-w (+ (* scr-w side-offset) w))))
         (assoc-in [:value :y] center-y)
-        (assoc-in [:value :center-y] center-y))))
+        (assoc-in [:value :center-y] center-y)
+
+        (assoc :update (condp = side
+                         :left nil
+                         :right (fn [event world-state ent]
+                                  (let [[_ mouse-y]  (:mouse-coords world-state)
+                                        [_ canvas-h] (:canvas-size world-state)
+                                        paddle-h     (get-in ent [:value :h])
+                                        new-y        (- mouse-y (/ paddle-h 2))]
+                                    (assoc-in ent [:value :y] (clamp new-y 0 (- canvas-h paddle-h))))))))))

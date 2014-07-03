@@ -15,7 +15,7 @@
   [event world-state]
   (update-in world-state [:entities]
              #(mapv (fn [ent]
-                      (if-let [{:keys [update]} ent]
+                      (if-let [update (:update ent)]
                         (update event world-state ent)
                         ent))
                     %)))
